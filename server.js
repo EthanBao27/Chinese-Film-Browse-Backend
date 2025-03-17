@@ -8,7 +8,7 @@ const server = require('http').createServer(app)
 const { Server } = require('socket.io')
 const io = new Server(server, {
     cors: {
-        origin: ['http://localhost:5173', 'http://47.96.94.197:5173'],  // 允许本地和服务器地址
+        origin: ['http://8.153.74.243', 'http://localhost'],  // 允许本地和服务器地址
         methods: ['GET', 'POST'],  // 允许的HTTP方法
         credentials: true  // 允许凭证（如Cookies）
     }
@@ -37,11 +37,12 @@ const port = 3000
 
 // 跨域资源共享 (CORS) 配置，允许前端发起跨域请求
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://47.96.94.197:5173'],  // 添加前端服务器地址
+    origin: ['http://8.153.74.243', 'http://localhost'],  // 添加前端服务器地址
     credentials: true,  // 允许携带 Cookie
     methods: ['GET', 'POST', 'OPTIONS'],  // 允许的请求方法
-    allowedHeaders: ['Content-Type']  // 允许的请求头
-}));
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']  // 允许的请求头
+}
+));
 
 // 会话中间件
 app.use(session({
@@ -57,9 +58,7 @@ app.use(session({
 
 app.use(bodyParser.json())
 
-app.options('*', (req, res) => {
-    res.sendStatus(200);
-});
+app.options('*', cors());
 
 // 注册路由优化
 app.post('/register', async (req, res) => {
